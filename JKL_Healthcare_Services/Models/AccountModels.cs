@@ -142,4 +142,3 @@ namespace JKL_Healthcare_Services.Models // Defines the namespace for the models
 }
 
 
-JKL_Healthcare_Services.Models

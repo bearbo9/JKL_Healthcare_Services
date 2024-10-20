@@ -5,11 +5,17 @@ using System.Collections.Generic; // Allows the use of collections
 using System.Linq; // Provides LINQ functionalities
 using System.Net; // Allows handling network operations
 using System.Threading.Tasks; // Supports asynchronous programming
+using static JKL_Healthcare_Services.Models.AccountModels;
+using static JKL_Healthcare_Services.Models.Dbcontext;
 using System.Web; // Contains classes for the web
 using System.Web.Mvc; // Provides MVC functionalities
-using static JKL_Healthcare_Services.Controllers.AccountViewModels; // Allows access to AccountViewModels without namespace prefix
+using System.Data.Entity; // Provides database context functionalities for Entity Framework
+using Microsoft.AspNet.Identity; // Provides identity functionalities for managing users
+using Microsoft.AspNet.Identity.Owin; // Provides OWIN context-based identity management
+using static JKL_Healthcare_Services.App_Start.UserAuthConfig
+using Microsoft.Owin.Security; // Provides security-related functionalities for OWIN
 
-namespace JKL_Healthcare_Services.Controllers/ Define the namespace for the controller
+namespace JKL_Healthcare_Services.Controllers // Define the namespace for the controller
 {
     // AccountController handles user authentication and account management
     public class AccountController : Controller
@@ -21,7 +27,7 @@ namespace JKL_Healthcare_Services.Controllers/ Define the namespace for the cont
         // Default constructor initializes the database context
         public AccountController()
         {
-            db = new ApplicationDbContext();
+            db = new ApplicationDbContext(); // Initialize the database context
         }
 
         // Constructor that allows dependency injection for user and sign-in managers
@@ -85,6 +91,7 @@ namespace JKL_Healthcare_Services.Controllers/ Define the namespace for the cont
                 case SignInStatus.Success: // Sign-in was successful
                     // Find the user by email and password
                     var user = await UserManager.FindAsync(model.Email, model.Password);
+
                     // Redirect based on the user's role
                     if (UserManager.IsInRole(user.Id, "Admin"))
                     {
@@ -98,6 +105,7 @@ namespace JKL_Healthcare_Services.Controllers/ Define the namespace for the cont
                     {
                         // Find the corresponding patient record
                         var patient = db.Patients.Single(c => c.ApplicationUserId == user.Id);
+
                         // Check if the patient's profile is complete
                         if (patient.BloodGroup == null || patient.Contact == null || patient.Gender == null)
                         {
@@ -112,6 +120,7 @@ namespace JKL_Healthcare_Services.Controllers/ Define the namespace for the cont
                     {
                         return RedirectToLocal(returnUrl); // Redirect to return URL if no specific role matched
                     }
+
                 case SignInStatus.Failure: // Sign-in failed
                 default:
                     ModelState.AddModelError("", "Invalid login attempt."); // Add error to model state
@@ -176,5 +185,3 @@ namespace JKL_Healthcare_Services.Controllers/ Define the namespace for the cont
         // Other methods (e.g., Logout, ConfirmEmail, etc.) would go here...
     }
 }
-
-
