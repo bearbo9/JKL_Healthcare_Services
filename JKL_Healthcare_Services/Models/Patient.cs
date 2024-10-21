@@ -1,49 +1,71 @@
-﻿using System; // Imports fundamental classes like DateTime, which are essential for date manipulations and other system-level operations.
-using System.Collections.Generic; // Provides support for collections like lists, dictionaries, etc., that may be used in the model.
-using System.ComponentModel.DataAnnotations; // Provides attributes like [Required], [Display], and [DataType] for validation and metadata annotations in the model.
-using System.Linq; // Enables LINQ (Language-Integrated Query) for querying collections, although not explicitly used here.
-using System.Web; // Contains classes for HTTP requests and web applications, though not directly used in this model.
+﻿using System; // Provides fundamental classes and base types, like DateTime, used for date manipulations.
+using System.Collections.Generic; // Enables collections such as List<T> and Dictionary<TKey, TValue> that could be used in models.
+using System.ComponentModel.DataAnnotations; // Provides attributes for validation like [Required], [EmailAddress], and [DataType].
+using System.Web; // Contains classes for web applications, although not directly used in this specific class.
+using static JKL_Healthcare_Services.Models.Dbcontext;
 
-namespace JKL_Healthcare_Services.Models // Declares the namespace, which groups related classes together. Here, it's for the healthcare service models.
+namespace JKL_Healthcare_Services.Models // Defines the namespace for grouping related classes in the healthcare service domain.
 {
-    public class Patient // Defines the Patient class, which represents a patient entity in the application.
+    public class Patient // Defines the Patient class, which represents a patient entity in the system.
     {
-        public int Id { get; set; } // Property to store the unique identifier for each patient. The database usually auto-generates this.
+        // Primary Key: Represents the unique identifier for each patient.
+        public int Id { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; } // Navigation property representing the relationship between the Patient and the ApplicationUser entity. This is useful for accessing the full user details.
-        public string ApplicationUserId { get; set; } // Foreign key property representing the ID of the associated ApplicationUser. It's a string because user IDs are often GUIDs or other non-numeric identifiers.
+        // Navigation Property: Links the Patient to the ApplicationUser entity (e.g., user account details).
+        public ApplicationUser ApplicationUser { get; set; }
 
-        [Required] // Indicates that this property is mandatory and cannot be null or empty.
-        [Display(Name = "First Name")] // Specifies the display name for this property in forms or UI, as "First Name" instead of the default "FirstName".
+        // Foreign Key: Stores the ID of the associated ApplicationUser as a string (commonly used for user IDs like GUIDs).
+        public string ApplicationUserId { get; set; }
+
+        // First Name Field: Required attribute ensures this field cannot be empty. 
+        // RegularExpression ensures the name contains only letters to prevent invalid input (e.g., numbers or special characters).
+        [Required(ErrorMessage = "First name is required.")]
+        [Display(Name = "First Name")] // Provides a more user-friendly label in the UI.
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First name should contain only letters.")]
         public string FirstName { get; set; } // Stores the patient's first name.
 
-        [Required] // Indicates that this property is required.
-        [Display(Name = "Last Name")] // Specifies the display name for this property as "Last Name".
+        // Last Name Field: Same validation rules as FirstName. Required and only allows alphabetic characters.
+        [Required(ErrorMessage = "Last name is required.")]
+        [Display(Name = "Last Name")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last name should contain only letters.")]
         public string LastName { get; set; } // Stores the patient's last name.
 
-        [Display(Name = "Name")] // Specifies the display name as "Name" for this field in the UI.
-        public string FullName { get; set; } // Stores the patient's full name. This might be computed from FirstName and LastName elsewhere in the application.
+        // Full Name Field: Combines the first and last names. This field could be automatically generated in the application logic.
+        [Display(Name = "Name")]
+        public string FullName { get; set; } // Stores the patient's full name.
 
-        [EmailAddress] // Ensures that the value entered for this property is a valid email address.
-        [Display(Name = "Email Id")] // Specifies the display name as "Email Id".
+        // Email Field: Validates that the email format is correct using [EmailAddress].
+        // The Required attribute ensures that an email must be provided.
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        [Required(ErrorMessage = "Email is required.")]
+        [Display(Name = "Email Id")]
         public string EmailAddress { get; set; } // Stores the patient's email address.
 
-        [Display(Name = "Phone No")] // Specifies the display name as "Phone No".
+        // Phone Number Field: Validates that the phone number contains only digits.
+        [Display(Name = "Phone No")]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Phone number must contain only digits.")]
         public string PhoneNo { get; set; } // Stores the patient's phone number.
 
-        public string Contact { get; set; } // Stores additional contact information. This could be a secondary phone number, or other contact details.
+        // Additional Contact Information Field: Can be used for secondary contact details (e.g., alternate phone or emergency contact).
+        public string Contact { get; set; } // Stores additional contact information.
 
-        [Display(Name = "Blood Group")] // Specifies the display name as "Blood Group".
-        public string BloodGroup { get; set; } // Stores the patient's blood group, which could be useful in medical contexts.
+        // Blood Group Field: Optional field that stores the patient's blood type, useful in medical contexts.
+        [Display(Name = "Blood Group")]
+        public string BloodGroup { get; set; } // Stores the patient's blood group.
 
-        public string Gender { get; set; } // Stores the patient's gender. It is kept optional or nullable for flexibility.
+        // Gender Field: Stores the patient's gender (optional), which might be used in medical or demographic reporting.
+        public string Gender { get; set; } // Stores the patient's gender.
 
-        [Display(Name = "Date of Birth")] // Specifies the display name as "Date of Birth" in the UI.
-        [DataType(DataType.Date)] // Indicates that this property should be treated as a date field.
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)] // Specifies the format in which the date should be displayed and edited (YYYY-MM-DD).
-        public DateTime? DateOfBirth { get; set; } // Stores the patient's date of birth. It's nullable (DateTime?) since a birthdate may not always be provided.
+        // Date of Birth Field: Specifies the patient's birthdate.
+        // [DataType(DataType.Date)] ensures the date is rendered correctly in the UI, and [DisplayFormat] defines how it's displayed.
+        [Display(Name = "Date of Birth")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)] // Formats the date as YYYY-MM-DD.
+        public DateTime? DateOfBirth { get; set; } // Nullable because the birth date might not always be available.
 
-        public string Address { get; set; } // Stores the patient's address, which might include street, city, etc.
+        // Address Field: Stores the patient's physical address, which may include street, city, state, etc.
+        public string Address { get; set; } // Stores the patient's address.
+
+        // Additional methods or properties (e.g., validation logic or data masking) could be implemented here to further secure or manipulate sensitive fields.
     }
 }
-

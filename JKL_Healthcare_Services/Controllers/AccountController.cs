@@ -12,7 +12,7 @@ using System.Web.Mvc; // Provides MVC functionalities
 using System.Data.Entity; // Provides database context functionalities for Entity Framework
 using Microsoft.AspNet.Identity; // Provides identity functionalities for managing users
 using Microsoft.AspNet.Identity.Owin; // Provides OWIN context-based identity management
-using static JKL_Healthcare_Services.App_Start.UserAuthConfig
+using static JKL_Healthcare_Services.App_Start.UserAuthConfig;
 using Microsoft.Owin.Security; // Provides security-related functionalities for OWIN
 
 namespace JKL_Healthcare_Services.Controllers // Define the namespace for the controller

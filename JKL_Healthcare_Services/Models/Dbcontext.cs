@@ -56,6 +56,10 @@ namespace JKL_Healthcare_Services.Models // Namespace for grouping related class
             // Define a DbSet for the Appointment model, representing appointments between patients and doctors.
             public DbSet<Appointment> Appointments { get; set; }
 
+            // Add a DbSet for Roles to manage roles within the application.
+            public DbSet<Roles> Role { get; set; } // Represents roles in the healthcare system.
+
+
 
             // Constructor for the ApplicationDbContext, calling the base class constructor to set the database connection.
             public ApplicationDbContext()

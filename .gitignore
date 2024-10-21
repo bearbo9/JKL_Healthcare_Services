@@ -1,1 +1,7 @@
 .vs
+Web.config
+Web.config
+packages.config
+bin/
+obj/
+JKL_Healthcare_Services.csproj
